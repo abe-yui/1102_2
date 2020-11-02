@@ -59,16 +59,32 @@ LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	switch (msg)
 	{
+		//マウス関連のイベントはウインドウ上にマウスがある時のみ発生する
+		//マウス操作はすべて位置が渡される
+		//lparamに入っているがxとyに分類して扱う
+		//LOWORDでx、HIWORDでyを取り出すことができる
 	case WM_LBUTTONDOWN://マウスの左ボタン押し
-		MessageBox(NULL, L"左", L"押した", MB_OK);
+		//MessageBox(NULL, L"左", L"押した", MB_OK);
+		posx = LOWORD(lparam);
+		posy = HIWORD(lparam);
+		break;
+	case WM_MOUSEMOVE:
+		posx = LOWORD(lparam);
+		posy = HIWORD(lparam);
+		break;
+	case WM_MOUSEWHEEL:
+		if (GET_WHEEL_DELTA_WPARAM(wparam) > 0)
+			posy += 10;
 		break;
 	case WM_KEYDOWN://キーを押した(UP離したもある)
 		//どのキーでも反応する
 		//wparamにきーを表す値が入るのでチェックする
 		//キー値はVK_～の定数値が大文字の文字コード(文字キー)
 		if (wparam==VK_RIGHT)
-		posx += 10;
+			posx += 10;
 		if (wparam == VK_F1)
+			posx = 0;
+		if (wparam == 'A')//大文字
 			posx = 0;
 		break;
 	case WM_DESTROY:
